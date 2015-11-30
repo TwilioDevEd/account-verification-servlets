@@ -1,4 +1,4 @@
-group 'org.example'
+group 'com.twilio.verification'
 version '1.0'
 
 buildscript {
