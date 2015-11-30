@@ -71,7 +71,7 @@ public class RegistrationServletTest {
         verify(users).createUser(anyString(), anyString(), anyString());
         verify(usersRepository).create(any(User.class));
         verify(users).requestSms(authyUser.getId());
-        verify(printWriter).print(anyString());
+        verify(response).sendRedirect("/verify-code");
     }
 
     @Test

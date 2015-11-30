@@ -31,6 +31,7 @@ public class RegistrationServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -49,9 +50,9 @@ public class RegistrationServlet extends HttpServlet {
 
                 // Request SMS authentication
                 authyClient.getUsers().requestSms(authyUserId);
-            }
 
-            response.getWriter().print("User was created");
+                response.sendRedirect("/verify-code");
+            }
         } else {
             preserveStatusRequest(request, name, email, countryCode, phoneNumber);
             request.getRequestDispatcher("/registration.jsp").forward(request, response);

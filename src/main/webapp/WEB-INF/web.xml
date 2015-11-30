@@ -11,9 +11,17 @@
         <servlet-name>registration</servlet-name>
         <servlet-class>com.twilio.verification.servlet.RegistrationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>verify-code</servlet-name>
+        <servlet-class>com.twilio.verification.servlet.VerifyCodeServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>registration</servlet-name>
         <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>verify-code</servlet-name>
+        <url-pattern>/verify-code</url-pattern>
     </servlet-mapping>
 </web-app>
