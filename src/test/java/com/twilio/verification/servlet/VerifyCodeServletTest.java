@@ -68,6 +68,7 @@ public class VerifyCodeServletTest {
 
         verify(usersRepository).update(any(User.class));
         verify(sessionManager).logIn(request, bob.getId());
+        verify(response).sendRedirect("/account");
     }
 
     @Test

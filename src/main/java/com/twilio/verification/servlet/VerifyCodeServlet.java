@@ -55,7 +55,7 @@ public class VerifyCodeServlet extends HttpServlet {
                 usersRepository.update(user);
 
                 sessionManager.logIn(request, userId);
-                // Redirect to account
+                response.sendRedirect("/account");
             } else {
                 request.setAttribute("codeError", "Incorrect code, please try again");
                 request.getRequestDispatcher("/verifyCode.jsp").forward(request, response);

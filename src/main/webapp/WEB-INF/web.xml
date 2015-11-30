@@ -15,6 +15,10 @@
         <servlet-name>verify-code</servlet-name>
         <servlet-class>com.twilio.verification.servlet.VerifyCodeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>account</servlet-name>
+        <servlet-class>com.twilio.verification.servlet.AccountServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>registration</servlet-name>
@@ -23,5 +27,9 @@
     <servlet-mapping>
         <servlet-name>verify-code</servlet-name>
         <url-pattern>/verify-code</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>account</servlet-name>
+        <url-pattern>/account</url-pattern>
     </servlet-mapping>
 </web-app>
