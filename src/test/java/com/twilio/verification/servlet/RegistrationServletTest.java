@@ -1,5 +1,7 @@
 package com.twilio.verification.servlet;
 
+import com.authy.AuthyApiClient;
+import com.authy.api.Users;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
 import org.junit.Before;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -33,13 +36,17 @@ public class RegistrationServletTest {
 
     @Mock private UsersRepository usersRepository;
 
+    @Mock private AuthyApiClient authyClient;
+
+    @Mock private Users users;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void registerCreatesAUserLocally() throws IOException, ServletException {
+    public void registerCreatesAUserLocalAndRemotely() throws IOException, ServletException {
         when(request.getParameter("name")).thenReturn("Bob");
         when(request.getParameter("email")).thenReturn("bob@example.com");
         when(request.getParameter("password")).thenReturn("s3cre7");
@@ -51,11 +58,19 @@ public class RegistrationServletTest {
 
         when(response.getWriter()).thenReturn(printWriter);
 
-        RegistrationServlet servlet = new RegistrationServlet(usersRepository);
+        when(authyClient.getUsers()).thenReturn(users);
+        com.authy.api.User authyUser = new com.authy.api.User();
+        authyUser.setId(1101);
+        authyUser.setStatus(HttpServletResponse.SC_OK);
+        when(users.createUser(anyString(), anyString(), anyString())).thenReturn(authyUser);
+
+        RegistrationServlet servlet = new RegistrationServlet(usersRepository, authyClient);
 
         servlet.doPost(request, response);
 
+        verify(users).createUser(anyString(), anyString(), anyString());
         verify(usersRepository).create(any(User.class));
+        verify(users).requestSms(authyUser.getId());
         verify(printWriter).print(anyString());
     }
 
@@ -68,7 +83,7 @@ public class RegistrationServletTest {
         when(request.getParameter("phoneNumber")).thenReturn("");
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
-        RegistrationServlet servlet = new RegistrationServlet(usersRepository);
+        RegistrationServlet servlet = new RegistrationServlet(usersRepository, authyClient);
         servlet.doPost(request, response);
 
         verify(usersRepository, never()).create(any(User.class));

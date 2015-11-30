@@ -1,5 +1,6 @@
 package com.twilio.verification.servlet;
 
+import com.authy.AuthyApiClient;
 import com.twilio.verification.lib.RequestParametersValidator;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
@@ -13,13 +14,19 @@ import java.io.IOException;
 public class RegistrationServlet extends HttpServlet {
 
     private final UsersRepository usersRepository;
+    private final AuthyApiClient authyClient;
 
+    @SuppressWarnings("unused")
     public RegistrationServlet() {
-       this(new UsersRepository());
+       this(
+               new UsersRepository(),
+               new AuthyApiClient(System.getenv("AUTHY_API_KEY"))
+       );
     }
 
-    public RegistrationServlet(UsersRepository usersRepository) {
+    public RegistrationServlet(UsersRepository usersRepository, AuthyApiClient authyClient) {
         this.usersRepository = usersRepository;
+        this.authyClient = authyClient;
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -32,7 +39,18 @@ public class RegistrationServlet extends HttpServlet {
 
         if (validateRequest(request)) {
 
-            User user = usersRepository.create(new User(name, email, password, countryCode, phoneNumber));
+            com.authy.api.User authyUser = authyClient.getUsers().createUser(email, phoneNumber, countryCode);
+
+            // Create user remotely
+            if (authyUser.isOk()) {
+                int authyUserId = authyUser.getId();
+                // Create user locally
+                usersRepository.create(new User(name, email, password, countryCode, phoneNumber, authyUserId));
+
+                // Request SMS authentication
+                authyClient.getUsers().requestSms(authyUserId);
+            }
+
             response.getWriter().print("User was created");
         } else {
             preserveStatusRequest(request, name, email, countryCode, phoneNumber);

@@ -39,13 +39,13 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, String countryCode, String phoneNumber) {
+    public User(String name, String email, String password, String countryCode, String phoneNumber, int authyId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.countryCode = countryCode;
         this.phoneNumber = phoneNumber;
-        this.authyId = 0;
+        this.authyId = authyId;
         this.verified = false;
         this.date = new Date();
     }
