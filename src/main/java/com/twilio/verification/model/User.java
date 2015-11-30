@@ -36,6 +36,9 @@ public class User {
     @Column(name = "date")
     private Date date;
 
+    public User() {
+    }
+
     public User(String name, String email, String password, String countryCode, String phoneNumber) {
         this.name = name;
         this.email = email;

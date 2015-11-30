@@ -7,4 +7,13 @@
     <welcome-file-list>
         <welcome-file>home.html</welcome-file>
     </welcome-file-list>
+    <servlet>
+        <servlet-name>registration</servlet-name>
+        <servlet-class>com.twilio.verification.servlet.RegistrationServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>registration</servlet-name>
+        <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
 </web-app>
