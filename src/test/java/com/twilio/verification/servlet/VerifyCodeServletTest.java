@@ -3,6 +3,7 @@ package com.twilio.verification.servlet;
 import com.authy.AuthyApiClient;
 import com.authy.api.Token;
 import com.authy.api.Tokens;
+import com.twilio.verification.lib.SessionManager;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +33,8 @@ public class VerifyCodeServletTest {
     @Mock private RequestDispatcher requestDispatcher;
 
     @Mock private UsersRepository usersRepository;
+
+    @Mock private SessionManager sessionManager;
 
     @Mock private AuthyApiClient authyClient;
 
@@ -45,20 +49,25 @@ public class VerifyCodeServletTest {
     public void whenTheProvidedCodeIsValidThenLogsIn() throws ServletException, IOException {
 
         final String code = "80001";
+        final int userId = 1001;
         when(request.getParameter("code")).thenReturn(code);
 
         User bob = new User();
-        bob.setAuthyId(1101);
+        bob.setId(userId);
+        bob.setAuthyId(80001);
+        when(sessionManager.getLoggedUserId(request)).thenReturn(userId);
         when(usersRepository.find(anyInt())).thenReturn(bob);
 
         Token token = new Token(200, "", "Token is valid.");
         when(authyClient.getTokens()).thenReturn(tokens);
         when(tokens.verify(bob.getAuthyId(), code)).thenReturn(token);
 
-        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, authyClient);
+
+        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, sessionManager, authyClient);
         servlet.doPost(request, response);
 
         verify(usersRepository).update(any(User.class));
+        verify(sessionManager).logIn(request, bob.getId());
     }
 
     @Test
@@ -68,7 +77,7 @@ public class VerifyCodeServletTest {
         when(request.getParameter("code")).thenReturn(code);
 
         User bob = new User();
-        bob.setAuthyId(1101);
+        bob.setAuthyId(80001);
         when(usersRepository.find(anyInt())).thenReturn(bob);
 
         Token token = new Token(200, "", "");
@@ -77,10 +86,12 @@ public class VerifyCodeServletTest {
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
-        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, authyClient);
+        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, sessionManager, authyClient);
         servlet.doPost(request, response);
 
         verify(request).setAttribute(anyString(), anyString());
         verify(request).getRequestDispatcher("/verifyCode.jsp");
+        verify(usersRepository, never()).update(any(User.class));
+        verify(sessionManager, never()).logIn(any(HttpServletRequest.class), anyInt());
     }
 }

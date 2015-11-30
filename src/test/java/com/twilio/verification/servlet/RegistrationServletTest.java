@@ -2,6 +2,7 @@ package com.twilio.verification.servlet;
 
 import com.authy.AuthyApiClient;
 import com.authy.api.Users;
+import com.twilio.verification.lib.SessionManager;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
 import org.junit.Before;
@@ -36,6 +37,8 @@ public class RegistrationServletTest {
 
     @Mock private UsersRepository usersRepository;
 
+    @Mock private SessionManager sessionManager;
+
     @Mock private AuthyApiClient authyClient;
 
     @Mock private Users users;
@@ -54,23 +57,25 @@ public class RegistrationServletTest {
         when(request.getParameter("phoneNumber")).thenReturn("555-5555");
 
         User bob = new User();
+        bob.setId(1101);
         when(usersRepository.create(any(User.class))).thenReturn(bob);
 
         when(response.getWriter()).thenReturn(printWriter);
 
         when(authyClient.getUsers()).thenReturn(users);
         com.authy.api.User authyUser = new com.authy.api.User();
-        authyUser.setId(1101);
+        authyUser.setId(80001);
         authyUser.setStatus(HttpServletResponse.SC_OK);
         when(users.createUser(anyString(), anyString(), anyString())).thenReturn(authyUser);
 
-        RegistrationServlet servlet = new RegistrationServlet(usersRepository, authyClient);
+        RegistrationServlet servlet = new RegistrationServlet(usersRepository, sessionManager, authyClient);
 
         servlet.doPost(request, response);
 
         verify(users).createUser(anyString(), anyString(), anyString());
         verify(usersRepository).create(any(User.class));
         verify(users).requestSms(authyUser.getId());
+        verify(sessionManager).partialLogIn(request, bob.getId());
         verify(response).sendRedirect("/verify-code");
     }
 
@@ -83,10 +88,11 @@ public class RegistrationServletTest {
         when(request.getParameter("phoneNumber")).thenReturn("");
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
-        RegistrationServlet servlet = new RegistrationServlet(usersRepository, authyClient);
+        RegistrationServlet servlet = new RegistrationServlet(usersRepository, sessionManager, authyClient);
         servlet.doPost(request, response);
 
         verify(usersRepository, never()).create(any(User.class));
+        verify(sessionManager, never()).partialLogIn(any(HttpServletRequest.class), anyInt());
         verify(request).getRequestDispatcher("/registration.jsp");
     }
 }

@@ -3,6 +3,7 @@ package com.twilio.verification.servlet;
 import com.authy.AuthyApiClient;
 import com.authy.api.Token;
 import com.twilio.verification.lib.RequestParametersValidator;
+import com.twilio.verification.lib.SessionManager;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
 
@@ -15,19 +16,22 @@ import java.io.IOException;
 public class VerifyCodeServlet extends HttpServlet {
 
     private final UsersRepository usersRepository;
+    private final SessionManager sessionManager;
     private final AuthyApiClient authyClient;
 
     @SuppressWarnings("unused")
     public VerifyCodeServlet() {
         this(
                 new UsersRepository(),
+                new SessionManager(),
                 new AuthyApiClient(System.getenv("AUTHY_API_KEY"))
         );
     }
 
-    public VerifyCodeServlet(UsersRepository usersRepository, AuthyApiClient authyClient) {
+    public VerifyCodeServlet(UsersRepository usersRepository, SessionManager sessionManager, AuthyApiClient authyClient) {
         this.usersRepository = usersRepository;
         this.authyClient = authyClient;
+        this.sessionManager = sessionManager;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,15 +46,15 @@ public class VerifyCodeServlet extends HttpServlet {
         String code = request.getParameter("code");
 
         if (validateRequest(request)) {
-            int userId = 1;
+            int userId = sessionManager.getLoggedUserId(request);
             User user = usersRepository.find(userId);
-            Token token = authyClient.getTokens().verify(user.getAuthyId(), code);
 
+            Token token = authyClient.getTokens().verify(user.getAuthyId(), code);
             if (token.isOk()) {
                 user.setVerified(true);
                 usersRepository.update(user);
 
-                // Complete login
+                sessionManager.logIn(request, userId);
                 // Redirect to account
             } else {
                 request.setAttribute("codeError", "Incorrect code, please try again");

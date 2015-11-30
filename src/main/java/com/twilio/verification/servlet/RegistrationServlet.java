@@ -2,6 +2,7 @@ package com.twilio.verification.servlet;
 
 import com.authy.AuthyApiClient;
 import com.twilio.verification.lib.RequestParametersValidator;
+import com.twilio.verification.lib.SessionManager;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
 
@@ -14,18 +15,21 @@ import java.io.IOException;
 public class RegistrationServlet extends HttpServlet {
 
     private final UsersRepository usersRepository;
+    private final SessionManager sessionManager;
     private final AuthyApiClient authyClient;
 
     @SuppressWarnings("unused")
     public RegistrationServlet() {
        this(
                new UsersRepository(),
+               new SessionManager(),
                new AuthyApiClient(System.getenv("AUTHY_API_KEY"))
        );
     }
 
-    public RegistrationServlet(UsersRepository usersRepository, AuthyApiClient authyClient) {
+    public RegistrationServlet(UsersRepository usersRepository, SessionManager sessionManager, AuthyApiClient authyClient) {
         this.usersRepository = usersRepository;
+        this.sessionManager = sessionManager;
         this.authyClient = authyClient;
     }
 
@@ -46,11 +50,12 @@ public class RegistrationServlet extends HttpServlet {
             if (authyUser.isOk()) {
                 int authyUserId = authyUser.getId();
                 // Create user locally
-                usersRepository.create(new User(name, email, password, countryCode, phoneNumber, authyUserId));
+                User user = usersRepository.create(new User(name, email, password, countryCode, phoneNumber, authyUserId));
 
                 // Request SMS authentication
                 authyClient.getUsers().requestSms(authyUserId);
 
+                sessionManager.partialLogIn(request, user.getId());
                 response.sendRedirect("/verify-code");
             }
         } else {
