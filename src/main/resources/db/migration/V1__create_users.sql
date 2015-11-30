@@ -1,0 +1,11 @@
+CREATE TABLE users (
+    id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    country_code VARCHAR(4) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    authy_id INTEGER NOT NULL,
+    verified BOOLEAN NOT NULL,
+    DATE TIMESTAMP NOT NULL
+);
