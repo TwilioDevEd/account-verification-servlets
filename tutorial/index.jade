@@ -1,5 +1,7 @@
 .chapter(data-title='Account Verification Laravel')
-  .step(data-title='Introduction', data-file='src/main/webapp/WEB-INF/web.xml')
+  .step(
+    data-title='Introduction',
+    data-file='src/main/webapp/WEB-INF/web.xml')
     :markdown
       ## Introduction
 
@@ -31,3 +33,173 @@
 
       Let's get started! Click the right arrow to move on to the next step of
       the tutorial.
+
+  .step(
+    data-title='User Model',
+    data-file='src/main/java/com/twilio/verification/model/User.java')
+    :markdown
+      ## The User Model
+
+      The User Model for this use-case is pretty straightforward and JPA
+      offers us some tools to make it even simpler. If you have already read
+      through the 2FA tutorial this probably looks very similar.
+
+      **See Also:**
+
+      * [Java Persistence API](//docs.oracle.com/javaee/6/tutorial/doc/bnbpz.html)
+
+  .step(
+    data-title='User Registration',
+    data-file='src/main/java/com/twilio/verification/servlet/RegistrationServlet.java',
+    data-highlight='36-65')
+    :markdown
+      ## User Registration
+
+      When we create a new user, we ask for a _name_, _e-mail address_, and a
+      _password_.
+      In order to validate their account, we also ask them for a _mobile number_
+      with a _country code_, which we can use with Authy to send them one-time
+      passwords via SMS.
+
+      It is now the servlet's responsibility to verify that the user provides
+      the necessary information to create a new user, and in this case, if the
+      user is created successfully, he/she will be logged in to the system
+      automatically.
+
+      So, now the user is logged in, but not verified. In the next steps, we'll
+      learn how to verify the user using authy.
+
+  .step(
+    data-title='Configuring Authy',
+    data-file='build.gradle',
+    data-highlight='23-25,34')
+    :markdown
+      ## Configuring Authy
+
+      In `.environment`, we list configuration parameters for the application.
+      These are pulled from system environment variables, which is a helpful way
+      to access sensitive values (like API keys). This prevents us from accidentally
+      checking them into source control.
+
+      Now, we need our Authy production key ([sign up for Authy
+      here](https://dashboard.authy.com/signup)). When you create an Authy
+      application, the production key is found on the dashboard:
+
+      ![Authy Dashboard](//s3.amazonaws.com/howtodocs/2fa-authy-dashboard.png)
+
+      Next, we need to jump over to the `RegistrationServlet` to configure the
+      Authy client and create an instance method to send a one-time password.
+
+  .step(
+    data-title='Sending a Token on Account Creation',
+    data-file='src/main/java/com/twilio/verification/servlet/RegistrationServlet.java',
+    data-highlight='55-59')
+    :markdown
+      ## Sending a Token on Account Creation
+
+      Once the user has an `authyId`, we can actually send a verification code
+      to that user's mobile phone.
+
+      When our user is created successfully via the form we implemented, we send
+      a token to the user's mobile phone to verify their account in our
+      controller. When the code is sent, we redirect to another page where the
+      user can enter the token they received, completing the verification
+      process.
+
+      Let's check out the code for that next!
+
+      ---
+
+      **See Also:**
+      * [Java Client for Authy API](//github.com/authy/authy-java)
+
+  .step(
+    data-title='Verifying the Code',
+    data-file='src/main/java/com/twilio/verification/servlet/VerifyCodeServlet.java',
+    data-highlight='57-69')
+    :markdown
+      ## Verifying the Code
+
+      This servlet method handles the code verification. It needs to:
+
+      * Get the current user.
+      * Verify the code that was entered by the user.
+      * If the code entered was valid, flip a boolean flag on the user model to
+      indicate the account was verified.
+
+      Authy provides us with a `verify()` method that allows us to pass a user
+      id, and token. In this case we just need to check that the API request was
+      successful and if so set `user.setVerified()` to `true`.
+
+      That's all for token verification! However, our verification form wouldn't
+      be very usable if there wasn't a way to resend a verification code if the
+      message didn't arrive at the end user's handset for whatever reason.
+
+      ---
+
+      **See Also:**
+      * [Java Client for Authy API](//github.com/authy/authy-java)
+
+  .step(
+    data-title='Display User Data',
+    data-file='src/main/java/com/twilio/verification/servlet/AccountServlet.java',
+    data-highlight='28-39')
+    :markdown
+      ## Display User Data
+
+      This servlet will provide the necessary information to display the user's
+      data.
+
+      This should suffice for confirmation in the browser that the user has been
+      verified. Let's see how we might send that text message next.
+
+  .step(
+    data-title='Sending the Confirmation Message',
+    data-file='src/main/java/com/twilio/verification/lib/Sender.java',
+    data-highlight='24-41')
+    :markdown
+      ## Sending the Confirmation Message
+
+      Much as we did for our Authy client, we create a single instance of the
+      Twilio REST API helper, called `client` in this example.
+
+      Then all we need to do to send an SMS to the user's phone is use the built
+      in `send()`. Notice that we'll use the user's `fullNumber()` to make sure
+      we support international numbers. The `getFullPhoneNumber()` method in the
+      `User` model simply returns a combination of the `countryCode` and
+      `phoneNumber` that the user provided upon registration.
+
+      For more information on how to send SMS using Twilio's Rest API visit this
+      [link](//github.com/twilio/twilio-java#examples).
+
+      ---
+
+      **See Also:**
+      * [Twilio Rest API Documentation](//www.twilio.com/docs/api/rest)
+      * [Sending SMS or MMS](//www.twilio.com/docs/api/rest/sending-messages)
+
+  .step(data-title='Where to Next?')
+    :markdown
+      ## Where to Next?
+
+      That's it! We've just implemented account verification so your users can
+      confirm their phone number. If you're a Java developer working with Twilio,
+      you might want to check out these other tutorials:
+
+      [**Click-To-Call**](//www.twilio.com/docs/tutorials/walkthrough/click-to-call/java/servlets)
+      _(Servlets)_
+
+      Put a button on your web page that connects visitors to live support or sales people via telephone.
+
+      [**Automated
+      Survey**](//www.twilio.com/docs/tutorials/walkthrough/automated-survey/java/spark)
+      _(Spark)_
+
+      Instantly collect structured data from your users with a survey conducted
+      over a voice call or SMS text messages.
+
+      ### Did this help?
+
+      Thanks for checking out this tutorial! If you have any feedback to share
+      with us, we'd love to hear it. Tweet
+      [@twilio](http://twitter.com/twilio) to let us know what you think.
