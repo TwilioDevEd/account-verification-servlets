@@ -98,6 +98,10 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getFullPhoneNumber() {
+        return countryCode + phoneNumber;
+    }
+
     public int getAuthyId() {
         return authyId;
     }

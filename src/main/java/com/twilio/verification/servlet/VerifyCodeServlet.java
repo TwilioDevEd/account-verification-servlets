@@ -3,6 +3,7 @@ package com.twilio.verification.servlet;
 import com.authy.AuthyApiClient;
 import com.authy.api.Token;
 import com.twilio.verification.lib.RequestParametersValidator;
+import com.twilio.verification.lib.Sender;
 import com.twilio.verification.lib.SessionManager;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
@@ -18,20 +19,24 @@ public class VerifyCodeServlet extends HttpServlet {
     private final UsersRepository usersRepository;
     private final SessionManager sessionManager;
     private final AuthyApiClient authyClient;
+    private final Sender sender;
 
     @SuppressWarnings("unused")
     public VerifyCodeServlet() {
         this(
                 new UsersRepository(),
                 new SessionManager(),
-                new AuthyApiClient(System.getenv("AUTHY_API_KEY"))
+                new AuthyApiClient(System.getenv("AUTHY_API_KEY")),
+                new Sender()
         );
     }
 
-    public VerifyCodeServlet(UsersRepository usersRepository, SessionManager sessionManager, AuthyApiClient authyClient) {
+    public VerifyCodeServlet(
+            UsersRepository usersRepository, SessionManager sessionManager, AuthyApiClient authyClient, Sender sender) {
         this.usersRepository = usersRepository;
         this.authyClient = authyClient;
         this.sessionManager = sessionManager;
+        this.sender = sender;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -53,6 +58,8 @@ public class VerifyCodeServlet extends HttpServlet {
             if (token.isOk()) {
                 user.setVerified(true);
                 usersRepository.update(user);
+                // Send SMS confirmation
+                sender.send(user.getFullPhoneNumber(), "You did it! Sign up complete :3");
 
                 sessionManager.logIn(request, userId);
                 response.sendRedirect("/account");

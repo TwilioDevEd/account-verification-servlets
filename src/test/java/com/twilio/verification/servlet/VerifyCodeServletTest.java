@@ -3,6 +3,7 @@ package com.twilio.verification.servlet;
 import com.authy.AuthyApiClient;
 import com.authy.api.Token;
 import com.authy.api.Tokens;
+import com.twilio.verification.lib.Sender;
 import com.twilio.verification.lib.SessionManager;
 import com.twilio.verification.model.User;
 import com.twilio.verification.repository.UsersRepository;
@@ -40,6 +41,8 @@ public class VerifyCodeServletTest {
 
     @Mock private Tokens tokens;
 
+    @Mock private Sender sender;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -55,6 +58,8 @@ public class VerifyCodeServletTest {
         User bob = new User();
         bob.setId(userId);
         bob.setAuthyId(80001);
+        bob.setCountryCode("1");
+        bob.setPhoneNumber("555-5555");
         when(sessionManager.getLoggedUserId(request)).thenReturn(userId);
         when(usersRepository.find(anyInt())).thenReturn(bob);
 
@@ -63,10 +68,11 @@ public class VerifyCodeServletTest {
         when(tokens.verify(bob.getAuthyId(), code)).thenReturn(token);
 
 
-        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, sessionManager, authyClient);
+        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, sessionManager, authyClient, sender);
         servlet.doPost(request, response);
 
         verify(usersRepository).update(any(User.class));
+        verify(sender).send("1555-5555", "You did it! Sign up complete :3");
         verify(sessionManager).logIn(request, bob.getId());
         verify(response).sendRedirect("/account");
     }
@@ -87,7 +93,7 @@ public class VerifyCodeServletTest {
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
 
-        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, sessionManager, authyClient);
+        VerifyCodeServlet servlet = new VerifyCodeServlet(usersRepository, sessionManager, authyClient, sender);
         servlet.doPost(request, response);
 
         verify(request).setAttribute(anyString(), anyString());
