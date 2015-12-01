@@ -1,0 +1,33 @@
+.chapter(data-title='Account Verification Laravel')
+  .step(data-title='Introduction', data-file='src/main/webapp/WEB-INF/web.xml')
+    :markdown
+      ## Introduction
+
+      Ready to implement user account verification in your application? Here's how it works at a high level:
+
+      1. The users begin the registration process by entering their data,
+         including a phone number, into a signup form.
+      2. The authentication system sends a one-time password to the user's
+         mobile phone to verify the possession of that phone number.
+      3. The user enters the one-time password into a form before completing
+         registration.
+      4. The user sees a success page and receives an SMS indicating that
+         his/her account has been create.
+
+      ## Building Blocks
+
+      To get this done, you'll be working with the following Twilio-powered APIs:
+
+      **Authy REST API**
+
+      * [Authy Docs](//docs.authy.com/): Find quick starts, documentation, and
+      all about the helper libraries.
+
+      **Twilio REST API**
+
+      * [Messages Resource](//www.twilio.com/docs/api/rest/sending-messages): We
+      will use Twilio directly to send our user a confirmation message after
+      they create an account.
+
+      Let's get started! Click the right arrow to move on to the next step of
+      the tutorial.
