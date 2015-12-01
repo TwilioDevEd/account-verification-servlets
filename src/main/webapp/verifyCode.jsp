@@ -33,6 +33,11 @@
         </div>
         <button class="btn btn-primary">Verify Token</button>
     </form>
+    <hr />
+
+    <form action="resend-token" method="post">
+        <button class="btn">Resend Token</button>
+    </form>
 
 </section><!-- /.container -->
 

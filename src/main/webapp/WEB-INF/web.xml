@@ -19,6 +19,10 @@
         <servlet-name>account</servlet-name>
         <servlet-class>com.twilio.verification.servlet.AccountServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>resend-token</servlet-name>
+        <servlet-class>com.twilio.verification.servlet.ResendTokenServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>registration</servlet-name>
@@ -32,6 +36,10 @@
         <servlet-name>account</servlet-name>
         <url-pattern>/account</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resend-token</servlet-name>
+        <url-pattern>/resend-token</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>authentication</filter-name>
@@ -42,5 +50,6 @@
         <filter-name>authentication</filter-name>
         <url-pattern>/account</url-pattern>
         <url-pattern>/verify-code</url-pattern>
+        <url-pattern>/resend-token</url-pattern>
     </filter-mapping>
 </web-app>
