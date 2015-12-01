@@ -32,4 +32,15 @@
         <servlet-name>account</servlet-name>
         <url-pattern>/account</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>authentication</filter-name>
+        <filter-class>com.twilio.verification.filter.AuthenticationFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>authentication</filter-name>
+        <url-pattern>/account</url-pattern>
+        <url-pattern>/verify-code</url-pattern>
+    </filter-mapping>
 </web-app>
