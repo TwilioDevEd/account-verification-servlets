@@ -22,8 +22,7 @@
 
       **Authy REST API**
 
-      * [Authy Docs](//docs.authy.com/): Find quick starts, documentation, and
-      all about the helper libraries.
+      * [Authy Docs](//docs.authy.com/): Find quick starts, documentation, more information about the helper libraries.
 
       **Twilio REST API**
 
@@ -55,15 +54,13 @@
     :markdown
       ## User Registration
 
-      When we create a new user, we ask for a _name_, _e-mail address_, and a
-      _password_.
-      In order to validate their account, we also ask them for a _mobile number_
+      First we create a user.
+      In order to validate their account, we need a _mobile number_
       with a _country code_, which we can use with Authy to send them one-time
       passwords via SMS.
 
       It is now the servlet's responsibility to verify that the user provides
-      the necessary information to create a new user, and in this case, if the
-      user is created successfully, he/she will be logged in to the system
+      the necessary information to create a new user and log them into the system
       automatically.
 
       So, now the user is logged in, but not verified. In the next steps, we'll
@@ -98,7 +95,7 @@
       ## Sending a Token on Account Creation
 
       Once the user has an `authyId`, we can actually send a verification code
-      to that user's mobile phone.
+      to that user's phone.
 
       When our user is created successfully via the form we implemented, we send
       a token to the user's mobile phone to verify their account in our
@@ -191,12 +188,10 @@
 
       Put a button on your web page that connects visitors to live support or sales people via telephone.
 
-      [**Automated
-      Survey**](//www.twilio.com/docs/tutorials/walkthrough/automated-survey/java/spark)
-      _(Spark)_
+      [**IVR Phone Tree**](//www.twilio.com/docs/tutorials/walkthrough/ivr-phone-tree/java/servlets)
+      _(Servlets)_
 
-      Instantly collect structured data from your users with a survey conducted
-      over a voice call or SMS text messages.
+      Improve your customer service by building an full-feature interactive phone line... in minutes.
 
       ### Did this help?
 
