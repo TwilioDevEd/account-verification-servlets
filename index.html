@@ -13,7 +13,7 @@
 <p>Ready to implement user account verification in your application? Here&#39;s how it works at a high level:</p>
 <ol>
 <li>The users begin the registration process by entering their data,
-including a phone number, into a signup form.</li>
+including a phone number into a signup form.</li>
 <li>The authentication system sends a one-time password to the user&#39;s
 mobile phone to verify the possession of that phone number.</li>
 <li>The user enters the one-time password into a form before completing
@@ -44,25 +44,23 @@ through the 2FA tutorial this probably looks very similar.</p>
 <li><a href="//docs.oracle.com/javaee/6/tutorial/doc/bnbpz.html">Java Persistence API</a></li>
 </ul>
 </div><div data-title="User Registration" data-file="src/main/java/com/twilio/verification/servlet/RegistrationServlet.java" data-highlight="36-65" class="step"><h2 id="user-registration">User Registration</h2>
-<p>First we create a user.
-In order to validate their account, we need a <em>mobile number</em>
-with a <em>country code</em>, which we can use with Authy to send them one-time
-passwords via SMS.</p>
-<p>It is now the servlet&#39;s responsibility to verify that the user provides
+<p>First we create a user and in order to validate their account, we need a <em>mobile number</em>
+with a <em>country code</em>. We then use Authy to send a one-time password via SMS.</p>
+<p>It is up to the servlets to verify that the user provides
 the necessary information to create a new user and log them into the system
 automatically.</p>
-<p>So, now the user is logged in, but not verified. In the next steps, we&#39;ll
+<p>Once the user is logged in he is still not verified. In the next steps, we&#39;ll
 learn how to verify the user using Authy.</p>
 </div><div data-title="Configuring Authy" data-file="build.gradle" data-highlight="23-25,34" class="step"><h2 id="configuring-authy">Configuring Authy</h2>
-<p>In <code>.environment</code>, we list configuration parameters for the application.
+<p>In <code>.environment</code> we list the configuration parameters for the application.
 These are pulled from system environment variables, which is a helpful way
 to access sensitive values (like API keys). This prevents us from accidentally
 checking them into source control.</p>
-<p>Now, we need our Authy production key (<a href="https://dashboard.authy.com/signup">sign up for Authy
+<p>Now we need our Authy production key (<a href="https://dashboard.authy.com/signup">sign up for Authy
 here</a>). When you create an Authy
-application, the production key is found on the dashboard:</p>
+application the production key is found on the dashboard:</p>
 <p><img src="//s3.amazonaws.com/howtodocs/2fa-authy-dashboard.png" alt="Authy Dashboard"></p>
-<p>Next, we need to jump over to the <code>RegistrationServlet</code> to configure the
+<p>Next we need to jump over to the <code>RegistrationServlet</code> to configure the
 Authy client and create an instance method to send a one-time password.</p>
 </div><div data-title="Sending a Token on Account Creation" data-file="src/main/java/com/twilio/verification/servlet/RegistrationServlet.java" data-highlight="55-59" class="step"><h2 id="sending-a-token-on-account-creation">Sending a Token on Account Creation</h2>
 <p>Once the user has an <code>authyId</code>, we can actually send a verification code
@@ -70,7 +68,7 @@ to that user&#39;s phone.</p>
 <p>When our user is created successfully via the form we implemented, we send
 a token to the user&#39;s mobile phone to verify their account in our
 controller. When the code is sent, we redirect to another page where the
-user can enter the token they received, completing the verification
+user can enter the token they&#39;ve received, completing the verification
 process.</p>
 <p>Let&#39;s check out the code for that next!</p>
 <hr>
@@ -105,10 +103,10 @@ verified. Let&#39;s see how we might send that text message next.</p>
 </div><div data-title="Sending the Confirmation Message" data-file="src/main/java/com/twilio/verification/lib/Sender.java" data-highlight="24-41" class="step"><h2 id="sending-the-confirmation-message">Sending the Confirmation Message</h2>
 <p>Much as we did for our Authy client, we create a single instance of the
 Twilio REST API helper, called <code>client</code> in this example.</p>
-<p>Then all we need to do to send an SMS to the user&#39;s phone is use the built
-in <code>send()</code>. Notice that we&#39;ll use the user&#39;s <code>fullNumber()</code> to make sure
-we support international numbers. The <code>getFullPhoneNumber()</code> method in the
-<code>User</code> model simply returns a combination of the <code>countryCode</code> and
+<p>Then all we need to do to is send an SMS to the user&#39;s phone. This is done
+using the <code>send()</code> build. Notice that we&#39;ll use the user&#39;s <code>fullNumber()</code> to
+make sure we support international numbers. The <code>getFullPhoneNumber()</code> method
+in the <code>User</code> model simply returns a combination of the <code>countryCode</code> and
 <code>phoneNumber</code> that the user provided upon registration.</p>
 <p>For more information on how to send SMS using Twilio&#39;s Rest API visit this
 <a href="//github.com/twilio/twilio-java#examples">link</a>.</p>
@@ -127,7 +125,7 @@ you might want to check out these other tutorials:</p>
 <p>Put a button on your web page that connects visitors to live support or sales people via telephone.</p>
 <p><a href="//www.twilio.com/docs/tutorials/walkthrough/ivr-phone-tree/java/servlets"><strong>IVR Phone Tree</strong></a>
 <em>(Servlets)</em></p>
-<p>Improve your customer service by building an full-feature interactive phone line... in minutes.</p>
+<p>Improve your customer service by building a full feature interactive phone line... in minutes.</p>
 <h3 id="did-this-help-">Did this help?</h3>
 <p>Thanks for checking out this tutorial! If you have any feedback to share
 with us, we&#39;d love to hear it.

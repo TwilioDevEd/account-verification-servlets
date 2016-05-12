@@ -8,7 +8,7 @@
       Ready to implement user account verification in your application? Here's how it works at a high level:
 
       1. The users begin the registration process by entering their data,
-         including a phone number, into a signup form.
+         including a phone number into a signup form.
       2. The authentication system sends a one-time password to the user's
          mobile phone to verify the possession of that phone number.
       3. The user enters the one-time password into a form before completing
@@ -54,16 +54,14 @@
     :markdown
       ## User Registration
 
-      First we create a user.
-      In order to validate their account, we need a _mobile number_
-      with a _country code_, which we can use with Authy to send them one-time
-      passwords via SMS.
+      First we create a user and in order to validate their account, we need a _mobile number_
+      with a _country code_. We then use Authy to send a one-time password via SMS.
 
-      It is now the servlet's responsibility to verify that the user provides
+      It is up to the servlets to verify that the user provides
       the necessary information to create a new user and log them into the system
       automatically.
 
-      So, now the user is logged in, but not verified. In the next steps, we'll
+      Once the user is logged in he is still not verified. In the next steps, we'll
       learn how to verify the user using Authy.
 
   .step(
@@ -73,18 +71,18 @@
     :markdown
       ## Configuring Authy
 
-      In `.environment`, we list configuration parameters for the application.
+      In `.environment` we list the configuration parameters for the application.
       These are pulled from system environment variables, which is a helpful way
       to access sensitive values (like API keys). This prevents us from accidentally
       checking them into source control.
 
-      Now, we need our Authy production key ([sign up for Authy
+      Now we need our Authy production key ([sign up for Authy
       here](https://dashboard.authy.com/signup)). When you create an Authy
-      application, the production key is found on the dashboard:
+      application the production key is found on the dashboard:
 
       ![Authy Dashboard](//s3.amazonaws.com/howtodocs/2fa-authy-dashboard.png)
 
-      Next, we need to jump over to the `RegistrationServlet` to configure the
+      Next we need to jump over to the `RegistrationServlet` to configure the
       Authy client and create an instance method to send a one-time password.
 
   .step(
@@ -100,7 +98,7 @@
       When our user is created successfully via the form we implemented, we send
       a token to the user's mobile phone to verify their account in our
       controller. When the code is sent, we redirect to another page where the
-      user can enter the token they received, completing the verification
+      user can enter the token they've received, completing the verification
       process.
 
       Let's check out the code for that next!
@@ -160,10 +158,10 @@
       Much as we did for our Authy client, we create a single instance of the
       Twilio REST API helper, called `client` in this example.
 
-      Then all we need to do to send an SMS to the user's phone is use the built
-      in `send()`. Notice that we'll use the user's `fullNumber()` to make sure
-      we support international numbers. The `getFullPhoneNumber()` method in the
-      `User` model simply returns a combination of the `countryCode` and
+      Then all we need to do to is send an SMS to the user's phone. This is done
+      using the `send()` build. Notice that we'll use the user's `fullNumber()` to
+      make sure we support international numbers. The `getFullPhoneNumber()` method
+      in the `User` model simply returns a combination of the `countryCode` and
       `phoneNumber` that the user provided upon registration.
 
       For more information on how to send SMS using Twilio's Rest API visit this
@@ -191,7 +189,7 @@
       [**IVR Phone Tree**](//www.twilio.com/docs/tutorials/walkthrough/ivr-phone-tree/java/servlets)
       _(Servlets)_
 
-      Improve your customer service by building an full-feature interactive phone line... in minutes.
+      Improve your customer service by building a full feature interactive phone line... in minutes.
 
       ### Did this help?
 
