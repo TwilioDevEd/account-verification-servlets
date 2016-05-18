@@ -1,55 +1,62 @@
-# Account Verification with Servlets
+# Account Verification with Servlets and Twilio
 
 [![Build Status](https://travis-ci.org/TwilioDevEd/account-verification-servlets.svg?branch=master)](https://travis-ci.org/TwilioDevEd/account-verification-servlets)
 
-Use Authy and Twilio to verify your user's account. [View the full tutorial here](https://www.twilio.com/docs/tutorials/walkthrough/account-verification/java/servlets)!
+When a new user signs up for your application, you want to make sure their contact information is accurate. You'd also like some assurance they are in fact a human being! You want to make sure that every new user account in your system is an actual person you can serve.
+
+There are many layers of security you can put in place to increase the quality of your signups, but one of the best is account verification via SMS. Before a registration is fully completed, your application sends the user a one-time passcode via SMS. The user then enters the code on your website to complete their registration.
+
+In this tutorial, you'll learn how to implement account verification at the point of registration using Twilio-powered Authy.
 
 ## Local Development
 
-1. Clone this repository and `cd` into it.
+This project is build using [Java 8](http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html) and uses [PostgreSQL](http://www.postgresql.org) as database.
+
+1. First clone this repository and `cd` into it.
 
    ```bash
-   $ git git@github.com:TwilioDevEd/account-verification-servlets.git
+   $ git clone git@github.com:TwilioDevEd/account-verification-servlets.git
    $ cd account-verification-servlets
    ```
 
-2. Create the database.
+1. Copy the sample configuration file and edit it to match your configuration.
+
+   ```bash
+   $ cp .environment .env
+   ```
+
+   You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` in your
+   [Twilio Account Settings](https://www.twilio.com/user/account/settings).
+   You will also need a `TWILIO_NUMBER`, which you may find [here](https://www.twilio.com/user/account/phone-numbers/incoming).
+   The `AUTHY_API_KEY` can be found [here](https://dashboard.authy.com/).
+
+   Run `source .env` to export the environment variables.
+
+1. Create the database.
 
    ```bash
    $ createdb account_verification_servlets
    ```
 
-   _The application uses PostgreSQL as the persistence layer. If you
-   don't have it already, you should install it. The easiest way is by
-   using [Postgres.app](http://postgresapp.com/)._
-
-3. Edit the sample configuration file `.environment` to match your configuration.
-
-   Once you have edited the `.environment` file, if you are using a UNIX operating system,
-   just use the `source` command to load the variables into your environment.
-
-   ```bash
-   $ source .environment
-   ```
-
-   _If you are using a different operating system, make sure that all the
-   variables from the `.environment` file are loaded into your environment._
-
-4. Execute the migrations.
+1. Execute the migrations.
 
    ```bash
    $ ./gradlew flywayMigrate
    ```
 
-5. Run the application.
+1. Make sure the tests succeed.
 
    ```bash
-   $ ./gradew jettyRun
+   $ ./gradlew check
    ```
 
-6. Check it out at [http://localhost:8080](http://localhost:8080)
+1. Start the server.
 
-That's it!
+   ```bash
+   $ ./gradlew jettyRun
+   ```
+
+1. Check it out at [http://localhost:8080](http://localhost:8080).
 
 ## Meta
 
