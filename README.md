@@ -8,6 +8,8 @@ There are many layers of security you can put in place to increase the quality o
 
 In this tutorial, you'll learn how to implement account verification at the point of registration using Twilio-powered Authy.
 
+[View the full tutorial here!](https://www.twilio.com/docs/tutorials/walkthrough/account-verification/java/servlets)
+
 ## Local Development
 
 This project is build using [Java 8](http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html) and uses [PostgreSQL](http://www.postgresql.org) as database.
