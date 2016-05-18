@@ -35,7 +35,7 @@ create an account.</li>
 </ul>
 <p>Let&#39;s get started! Click the right arrow to move on to the next step of the tutorial.</p>
 </div><div data-title="User Model" data-file="src/main/java/com/twilio/verification/model/User.java" data-highlight="7-37" class="step"><h2 id="the-user-model">The User Model</h2>
-<p>The User Model for this use-case is pretty straight-forward and JPA
+<p>The User Model for this use-case is pretty straightforward and JPA
 offers us some tools to make it even simpler. If you have already read
 through the <a href="//www.twilio.com/docs/tutorials/walkthrough/two-factor-authentication/java/servlets">2FA tutorial</a>
 this one probably looks very similar.</p>
@@ -64,7 +64,7 @@ application the production key is found on the dashboard.</p>
 to that user&#39;s mobile phone.</p>
 <p>When our user is created successfully, via the form we implemented, we send
 a token to the user&#39;s mobile phone to verify their account in our
-controller. When the code is sent we redirect to another page where the
+servlet. When the code is sent we redirect to another page where the
 user can enter the token they received, therefore completing the verification process.</p>
 <p>Let&#39;s check out the code for that next!</p>
 <hr>
@@ -103,7 +103,7 @@ user&#39;s account has been verified with a text message and a success page.</p>
 </div><div data-title="Sending the Confirmation Message" data-file="src/main/java/com/twilio/verification/lib/Sender.java" data-highlight="25,28,34-41" class="step"><h2 id="sending-the-confirmation-message">Sending the Confirmation Message</h2>
 <p>We create a single instance of the Twilio REST API helper,
 called <code>client</code> in this example.</p>
-<p>Then we need get the account, get the messageFactory and finally use its <code>sendMessage</code> method
+<p>Then we need get the account, get the <code>messageFactory</code> and finally use its <code>sendMessage</code> method
 in order to send an SMS to the user&#39;s phone.
 For more information on how to send SMS using Twilio&#39;s Rest API visit this
 <a href="//www.twilio.com/docs/quickstart/java/sms/sending-via-rest">link</a>.</p>
