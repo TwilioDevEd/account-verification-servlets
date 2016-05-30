@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/TwilioDevEd/account-verification-servlets.svg?branch=master)](https://travis-ci.org/TwilioDevEd/account-verification-servlets)
 
-When a new user signs up for your application, you want to make sure their contact information is accurate. You'd also like some assurance they are in fact a human being! You want to make sure that every new user account in your system is an actual person you can serve.
+When a new user signs up for your application, you want to make sure their contact information is accurate. You'd also like some assurance they are in fact a human being! You want to make sure that every new user account in your system is an actual person and not a robot.
 
-There are many layers of security you can put in place to increase the quality of your signups, but one of the best is account verification via SMS. Before a registration is fully completed, your application sends the user a one-time passcode via SMS. The user then enters the code on your website to complete their registration.
+There are many layers of security you can put in place to increase the quality of your signups, but one of the best is an account verification via SMS. Before a registration is fully completed, your application sends the user a one-time passcode via SMS. The user then enters the code on your website to complete their registration.
 
 In this tutorial, you'll learn how to implement account verification at the point of registration using Twilio-powered Authy.
 
