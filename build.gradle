@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.twilio.sdk:twilio-java-sdk:5.5.1'
+    compile 'com.twilio.sdk:twilio:7.0.0-rc-25'
     compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile 'javax.servlet:jstl:1.2'
     compile 'org.eclipse.persistence:eclipselink:2.6.1'
