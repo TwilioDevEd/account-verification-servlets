@@ -28,8 +28,8 @@ This project is build using [Java 8](http://www.oracle.com/technetwork/java/java
    ```
 
    You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` in your
-   [Twilio Account Settings](https://www.twilio.com/user/account/settings).
-   You will also need a `TWILIO_NUMBER`, which you may find [here](https://www.twilio.com/user/account/phone-numbers/incoming).
+   [Twilio Account Settings](https://www.twilio.com/console).
+   You will also need a `TWILIO_NUMBER`, which you may find [here](https://www.twilio.com/console/phone-numbers/incoming).
    The `AUTHY_API_KEY` can be found [here](https://dashboard.authy.com/).
 
    Run `source .env` to export the environment variables.
@@ -52,10 +52,10 @@ This project is build using [Java 8](http://www.oracle.com/technetwork/java/java
    $ ./gradlew check
    ```
 
-1. Start the server.
+1. Start the server(`--debug` flag optional, can be used to view request/response log).
 
    ```bash
-   $ ./gradlew jettyRun
+   $ ./gradlew jettyRun --debug
    ```
 
 1. Check it out at [http://localhost:8080](http://localhost:8080).
