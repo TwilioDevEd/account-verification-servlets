@@ -1,6 +1,6 @@
 export DB_USERNAME=Your-DB-Username
 export DB_PASSWORD=Your-DB-Password
-export JDBC_URL=jdbc:postgresql://localhost:5432/servlets_quickstart
+export JDBC_URL=jdbc:postgresql://localhost:5432/account_verification_servlets
 
 export AUTHY_API_KEY=Your-Authy-API-Key
 export TWILIO_ACCOUNT_SID=Your-Twilio-Account-SID
